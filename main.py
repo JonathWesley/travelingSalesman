@@ -122,8 +122,9 @@ def geneticAlgorithm(population, popSize, eliteSize, mutationRate, generations):
     bestRoute = pop[bestRouteIndex]
     return bestRoute
 
-def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generations):
+def geneticAlgorithmPlot(problemName, population, popSize, eliteSize, mutationRate, generations):
     pop = initialPopulation(popSize, population)
+    print("\nProblema " + problemName)
     print("Distancia inicial: " + str(1 / rankRoutes(pop)[0][1]))
     progress = []
     progress.append(1 / rankRoutes(pop)[0][1])
@@ -133,34 +134,39 @@ def geneticAlgorithmPlot(population, popSize, eliteSize, mutationRate, generatio
         progress.append(1 / rankRoutes(pop)[0][1])
     
     print("Distancia final: " + str(1 / rankRoutes(pop)[0][1]))
+    plt.figure('Problema ' + problemName,figsize=(10,8))
     plt.plot(progress)
+    plt.title('Problema ' + problemName)
     plt.ylabel('Distancia')
     plt.xlabel('Geracao')
+    plt.savefig('Problema' + problemName + '.png', format='png')
     plt.show()
 
 if __name__ == "__main__":
-    cityNumber = 0
-    cityList = []
-
-    iterator = 0
-    input_file = open("input20.txt")
+    problemList = []
+    
+    input_file = open("inputAll.txt")
     for line in input_file.readlines():
+        cityNumber = 0
+        cityList = []
         data = line.split(';')
-        if iterator == 0:
-            cityNumber = data[0]
+        cityNumber = int(data[0])
+        iterator = 0
+        index = 1
+        for i in range(cityNumber-1):
             city = City(iterator)
-            for i in range(iterator+1, len(data)):
-                city.connectedTo[i] = int(data[i])
+            for k in range(0, len(cityList)):
+                city.connectedTo[k] = cityList[k].connectedTo[city.name]
+            for j in range(i+1, cityNumber):
+                city.connectedTo[j] = int(data[index])
+                index += 1
             cityList.append(city)
-        else:
-            city = City(iterator)
-            for i in range(0, len(cityList)):
-                city.connectedTo[i] = cityList[i].connectedTo[city.name]
-            for i in range(0, len(data)):
-                city.connectedTo[iterator+1+i] = int(data[i])
-            
-            cityList.append(city)
-        iterator += 1
+            iterator += 1
+        problemList.append(cityList)   
+    
+    i = 1
+    for x in problemList:
+        geneticAlgorithmPlot(problemName=str(i), population=x, popSize=100, eliteSize=10, mutationRate=0.01, generations=200)
+        i += 1
 
-    #geneticAlgorithm(population=cityList, popSize=10, eliteSize=2, mutationRate=0.01, generations=10)
-    geneticAlgorithmPlot(population=cityList, popSize=100, eliteSize=10, mutationRate=0.01, generations=200)
+    
