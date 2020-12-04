@@ -40,7 +40,7 @@ def selection(popRanked, eliteSize):
         selectionResults.append(popRanked[i][0])
     # percorre o restante do vetor de rank
     for i in range(0, len(popRanked) - eliteSize):
-        # selecao por proporcao de Fitness
+        # selecao por proporcao de Fitness utilizando o metodo da roleta
         # faz com que os individuos com maior Fitness relativa tenham maior probabilidade de serem escolhidos
         pick = 100*random.random()
         for i in range(0, len(popRanked)):
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     problemList = []
     problemTam = []
     
-    input_file = open("inputAll.txt")
+    input_file = open("input20.txt")
     for line in input_file.readlines():
         cityNumber = 0
         cityList = []
@@ -209,6 +209,10 @@ if __name__ == "__main__":
                 index += 1
             cityList.append(city)
             iterator += 1
+        city = City(iterator)
+        for i in range(len(cityList)):
+            city.connectedTo[i] = cityList[i].connectedTo[cityNumber-1]
+        cityList.append(city)
         problemList.append(cityList)   
         problemTam.append(cityNumber)
     

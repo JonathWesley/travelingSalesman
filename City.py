@@ -26,3 +26,6 @@ if __name__ == "__main__":
     
     print(cityA)
     print(cityA.distance(cityB))
+    
+    
+    
